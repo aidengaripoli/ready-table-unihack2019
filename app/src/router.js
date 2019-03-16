@@ -29,6 +29,12 @@ export default new Router({
       path: '/confirmation/:id',
       name: 'confirmation',
       component: () => import(/* webpackChunkName: "confirmation" */ './views/Confirmation.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () =>
+        import('./views/Admin.vue')
     }
   ]
 })
