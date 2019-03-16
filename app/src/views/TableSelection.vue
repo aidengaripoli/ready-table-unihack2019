@@ -81,44 +81,44 @@
     </div>
 
     <p>Lets see where you can sit.</p>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Table No</th>
-          <th>Num Seats</th>
-          <th>Availability</th>
-          <th>Book</th>
-        </tr>
-        <tr v-for="item in restaurant.tables" v-bind:key="item.number">
-          <th>{{item.number}}</th>
-          <th>{{item.numSeats}}</th>
-          <th>
-            <p v-if="item.available">Available</p>
-            <p v-else>Unavailable</p>
-          </th>
-          <th>
-            <div class="field has-addons" v-if="item.available">
-              <div class="control">
-                <label class="radio">
-                  <input :value="item.number" v-model="tableNumber" type="radio" name="question">
-                  Pick
-                </label>
+
+    <div class="columns">
+      <div v-for="(item, index) in restaurant.tables" v-bind:key="item.number" class="column">
+        <div class="box">
+          <div @click="selectBooking(index)">
+            <div class="level is-mobile">
+              <div class="level-item">
+                Table: {{ item.number }}
+              </div>
+              <div class="level-item">
+                Seats: {{ item.numSeats }}
+              </div>
+              <div class="level-item">
+                <span class="tag is-primary" :class="{ 'is-info': selectedBooking === index }">
+                  {{ selectedBooking === index ? 'Selected' : 'Available!' }}
+                </span>
               </div>
             </div>
-          </th>
-        </tr>
-      </thead>
-    </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <button @click="book(tableNumber, restaurant)" class="button is-success">book</button>
+    <button
+      @click="book(tableNumber, restaurant)"
+      class="button is-info is-fullwidth"
+    >
+      Book!
+    </button>
   </div>
 </template>
 
 <script>
 export default {
   name: "Booking",
-  data: function() {
+  data () {
     return {
+      selectedBooking: '1',
       bookingNow: true,
       seatNumber: 0,
       day: Number,
@@ -135,6 +135,10 @@ export default {
     restaurant: {}
   },
   methods: {
+    selectBooking (index) {
+      this.selectedBooking = index
+    },
+
     toggleBookingNow: function(isBookingNow) {
       this.bookingNow = isBookingNow;
     },

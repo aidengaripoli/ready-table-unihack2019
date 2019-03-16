@@ -1,7 +1,11 @@
 <template>
   <div id="app">
-    <h1 class="title is-1">Ready Table</h1>
-    <router-view/>
+    <div class="container">
+      <div class="section">
+        <h1 class="title is-1">Ready Table</h1>
+        <router-view/>
+      </div>
+    </div>
   </div>
 </template>
 

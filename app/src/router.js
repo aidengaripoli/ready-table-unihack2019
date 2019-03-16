@@ -16,14 +16,19 @@ export default new Router({
     {
       path: '/booking',
       name: 'tableSelection',
-      component: () => import('./views/TableSelection.vue'),
+      component: () => import(/*  webpackChunkName: "tableSelection" */ './views/TableSelection.vue'),
       props: true
     },
     {
       path: '/book',
       name: 'book',
-      component: () => import('./views/Book.vue'),
+      component: () => import(/*  webpackChunkName: "book" */ './views/Book.vue'),
       props: true
+    },
+    {
+      path: '/confirmation',
+      name: 'confirmation',
+      component: () => import(/* webpackChunkName: "confirmation" */ './views/Confirmation.vue')
     }
   ]
 })

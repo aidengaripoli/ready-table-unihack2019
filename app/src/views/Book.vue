@@ -1,64 +1,84 @@
 <template>
   <div>
-    <p v-if="bookingDateTime">Booking at {{bookingDateTime}}</p>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Number</th>
-          <th>Name</th>
-          <th>Cost</th>
-          <th>Add/Remove</th>
-          <th>Quantity</th>
-        </tr>
-        <tr v-for="item in restaurant.menuItems" v-bind:key="item.name">
-          <th>{{item.number}}</th>
-          <th>{{item.name}}</th>
-          <th>{{item.cost}}</th>
-          <th>
-            <button @click="add(item.name, item.cost)" class="button is-success">+</button>
-            <button @click="remove(item.name, item.cost)" class="button is-danger">-</button>
-          </th>
-          <th>{{orderItems[item.name]}}</th>
-        </tr>
-      </thead>
-    </table>
-    <p>Total: ${{totalCost}}</p>
-    <button @click="book" class="button is-success">Make booking</button>
-
-    <div class="container">
-      <div class="section">
-        <div class="columns">
-          <div class="column is-4">
-            <div class="field">
-              <label class="label">Email</label>
-              <div class="control">
-                <input class="input" type="email" v-model="stripeEmail" placeholder="Email input">
-                <!-- <span class="icon is-small is-left">
-                  <i class="fas fa-envelope"></i>
-                </span> -->
-                <!-- <span class="icon is-small is-right">
-                  <i class="fas fa-exclamation-triangle"></i>
-                </span> -->
-              </div>
-              <!-- <p class="help is-danger">This email is invalid</p> -->
+    <div class="columns">
+      <div class="column">
+        <!-- <p v-if="bookingDateTime">Booking at {{bookingDateTime}}</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Number</th>
+              <th>Name</th>
+              <th>Cost</th>
+              <th>Add/Remove</th>
+              <th>Quantity</th>
+            </tr>
+            <tr v-for="item in restaurant.menuItems" v-bind:key="item.name">
+              <th>{{item.number}}</th>
+              <th>{{item.name}}</th>
+              <th>{{item.cost}}</th>
+              <th>
+                <button @click="add(item.name, item.cost)" class="button is-success">+</button>
+                <button @click="remove(item.name, item.cost)" class="button is-danger">-</button>
+              </th>
+              <th>{{orderItems[item.name] || 0}}</th>
+            </tr>
+          </thead>
+        </table> -->
+      
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-title control">
+              <label class="radio">
+                <input type="radio" v-model="orderOption" value="later" name="orderOption">
+                Order Later
+              </label>
             </div>
-
-            <card class='box'
-              :class='{ complete }'
-              stripe='pk_test_0ysGpufB2SoUGt85fEZ72rbG'
-              :options='stripeOptions'
-              @change='complete = $event.complete'
-            />
-            <button
-              class='button is-primary pay-with-stripe'
-              @click='pay'
-              :disabled='!complete'
-              :class="{ 'is-loading': loading }"
-            >
-              Pay with credit card
-            </button>
+          </div>
+          <div v-show="orderOption === 'later'" class="card-content">
+            <p>continue...</p>
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-title control">
+              <label class="radio">
+                <input type="radio" v-model="orderOption" value="now" name="orderOption">
+                Order Now!
+              </label>
+            </div>
+          </div>
+          <div v-show="orderOption === 'now'" class="card-content">
+            <p>menu</p>
+          </div>
+        </div>
+        <!-- <template v-show="totalCost === 0">      
+          <button @click="book" class="button is-success" :class="{ 'is-loading': loading }">Make booking</button>
+        </template> -->
+      </div>
+
+      <div v-show="orderOption === 'now' && totalCost > 0" class="column is-4">
+        <div class="field">
+          <label class="label">Email</label>
+          <div class="control">
+            <input class="input" type="email" v-model="stripeEmail" placeholder="Email input">
+          </div>
+        </div>
+
+        <card class='box'
+          :class='{ complete }'
+          stripe='pk_test_0ysGpufB2SoUGt85fEZ72rbG'
+          :options='stripeOptions'
+          @change='complete = $event.complete'
+        />
+        <button
+          class='button is-primary pay-with-stripe'
+          @click='pay'
+          :disabled='!complete'
+          :class="{ 'is-loading': loading }"
+        >
+          Pay with credit card
+        </button>
       </div>
     </div>
   </div>
@@ -77,11 +97,11 @@ export default {
       complete: false,
       loading: false,
       stripeEmail: '',
-      stripeOptions: {
-        // see https://stripe.com/docs/stripe.js#element-options for details
-      }
+      stripeOptions: {},
+      orderOption: 0
     };
   },
+
   props: {
     tableNumber: Number,
     bookingDateTime: String,
@@ -94,20 +114,19 @@ export default {
 
   methods: {
     book() {
-      if (Object.keys(this.menuItems).length === 0) {
-        // book without paying.
-      } else {
-        // need to pay for items.
-
-      }
+      this.loading = true
+      axios.post('https://us-central1-readytable.cloudfunctions.net/bookTable',
+        { message: 'reserved' }
+      ).then(res => {
+          this.loading = false
+          console.log(res)
+          this.$router.push('/confirmation')
+        }).catch(err => {
+          console.error(err)
+        })
     },
 
     pay() {
-      // createToken returns a Promise which resolves in a result object with
-      // either a token or an error key.
-      // See https://stripe.com/docs/api#tokens for the token object.
-      // See https://stripe.com/docs/api#errors for the error object.
-      // More general https://stripe.com/docs/stripe.js#stripe-create-token.
       this.loading = true
       createToken().then(data => {
         console.log(data)
@@ -117,9 +136,8 @@ export default {
           stripeToken: 'tok_visa', //testing token
           stripeAmount: this.totalCost
         }).then(res => {
-          this.loading = false
           console.log(res)
-          // this.$router.push('/confirmation')
+          this.book()
         }).catch(err => {
           this.loading = false
           console.error(err)
