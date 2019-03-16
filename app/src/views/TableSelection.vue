@@ -31,7 +31,7 @@
             </th>
             <th>
               <button
-                @click="book(resId, item.id)"
+                @click="book(resId, item.number)"
                 v-if="item.available"
                 class="button is-success"
               >book</button>
