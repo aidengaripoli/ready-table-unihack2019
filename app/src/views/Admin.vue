@@ -14,7 +14,8 @@
 </template>
 
 <script>
-import db from "@/firestore";
+import db from '@/firestore'
+import uuid from 'uuid/v4'
 
 import Orders from "@/components/Orders";
 
@@ -37,14 +38,33 @@ export default {
 
   methods: {
     test() {
-      var update = { ["bookings.1.menuOrderItems.ready"]: false };
+        let update = {[`bookings.${uuid()}`]: {
+            dateTime: '11/5/2019 4:00 PM',
+            fulfilled: false,
+            menuOrderItems: {
+                1: {
+                    name: 'Coco Loco',
+                    number: 1,
+                    paid: true,
+                    quantity: 1,
+                    ready: false
+                }
+            },
+            user: 'dosatross'
+        }};
 
-      db.collection("restaurants")
-        .doc("xBU8ruCxEYoiPsKX2hpR")
-        .update(update);
-      //   for (var key in this.restaurant.booking) {
-      //     console.log(this.restaurant.booking.key);
-      //   }
+        db.collection('restaurants').doc('xBU8ruCxEYoiPsKX2hpR').update(update);
+        
+
+        // Object.keys(this.restaurant.booking).map(key => {
+        //     const booking = this.restaurant.booking[key]
+        // })
+        //console.log(this.restaurant)
+        // db.collection('users').add({
+        //     username: 'memes'
+        // }).then(ref => {
+        //     console.log(ref)
+        // })
 
       Object.keys(this.restaurant.booking).map(key => {
         const booking = this.restaurant.booking[key];
