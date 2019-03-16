@@ -100,15 +100,18 @@
     <div class="columns">
       <div v-for="(item, index) in restaurant.tables" v-bind:key="item.number" class="column">
         <div class="box">
-          <div @click="selectBooking(index)">
+          <div @click="selectBooking(index, item.available)">
             <div class="level is-mobile">
               <div class="level-item">Table: {{ item.number }}</div>
               <div class="level-item">Seats: {{ item.numSeats }}</div>
-              <div class="level-item">
+              <div v-if="item.available" class="level-item">
                 <span
                   class="tag is-primary"
                   :class="{ 'is-info': selectedBooking == index }"
                 >{{ selectedBooking == index ? 'Selected' : 'Available!' }}</span>
+              </div>
+              <div v-if="!item.available" class="level-item">
+                <span class="tag is-danger">Unavailable!</span>
               </div>
             </div>
           </div>
@@ -144,8 +147,10 @@ export default {
     restaurant: {}
   },
   methods: {
-    selectBooking(index) {
-      this.selectedBooking = parseInt(index);
+    selectBooking(index, available) {
+      if (available) {
+        this.selectedBooking = parseInt(index);
+      }
     },
 
     toggleBookingNow: function(isBookingNow) {
