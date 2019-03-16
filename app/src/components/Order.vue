@@ -17,6 +17,7 @@
 
 <script>
 import db from "@/firestore";
+import axios from 'axios'
 
 export default {
   props: ["restaurantId", "bookingId", "booking"],
@@ -45,8 +46,36 @@ export default {
             db.collection("restaurants")
               .doc(this.restaurantId)
               .update(update);
+
+            this.allFoodDelivered()
+          } else {
+            this.foodReady()
           }
         });
+    },
+    foodReady() {
+      axios.post('https://us-central1-readytable.cloudfunctions.net/bookTable ',
+        { message: 'food_ready' }
+      )
+      .then(res => {
+        console.log(res)
+        console.log('sent!')
+      })
+      .catch(err => {
+        console.error(err)
+      })
+    },
+    allFoodDelivered() {
+      axios.post('https://us-central1-readytable.cloudfunctions.net/bookTable ',
+        { message: 'all_food_delivered' }
+      )
+      .then(res => {
+        console.log(res)
+        console.log('sent!')
+      })
+      .catch(err => {
+        console.error(err)
+      })
     }
   }
 };

@@ -134,6 +134,8 @@
 </template>
 
 <script>
+import db from '@/firestore'
+import uuid from 'uuid'
 import axios from 'axios'
 import { Card, createToken } from 'vue-stripe-elements-plus'
 
@@ -166,6 +168,11 @@ export default {
   methods: {
     book() {
       this.loading = true
+
+      const tableUpdate = { [`tables.${this.tableNumber}.available`]: false }
+
+      db.collection('restaurants').doc(this.restaurant.id).update(tableUpdate);
+
       axios.post('https://us-central1-readytable.cloudfunctions.net/bookTable',
         { message: 'reserved' }
       ).then(res => {
@@ -179,6 +186,21 @@ export default {
 
     pay() {
       this.loading = true
+
+      const menuItems = Object.keys(this.orderItems).map(key => {
+        return { name: key, paid: true, quantity: this.orderItems[key], ready: false }
+      })
+      const menuOrderItems = {...menuItems}
+
+      let update = {[`bookings.${uuid()}`]: {
+          dateTime: this.bookingDateTime,
+          fulfilled: false,
+          menuOrderItems,
+          user: 'dosatross'
+      }};
+
+      db.collection('restaurants').doc(this.restaurant.id).update(update);
+
       createToken().then(data => {
         console.log(data)
         console.log('token created', data.token)
