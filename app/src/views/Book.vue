@@ -35,7 +35,7 @@
             </div>
           </div>
           <div v-show="orderOption === 'later'" class="card-content">
-            <p>continue...</p>
+            <p>You will be able to order when you arrive.</p>
           </div>
         </div>
 
@@ -48,8 +48,27 @@
               </label>
             </div>
           </div>
+
           <div v-show="orderOption === 'now'" class="card-content">
-            <p>menu</p>
+            <h2 class="is-size-3">Menu</h2>
+            <br>
+            
+            <div v-for="item in restaurant.menuItems" v-bind:key="item.name" class="card">
+              <div class="card-content">
+                <div class="level is-mobile">
+                  <div class="level-item">
+                    {{ item.name }}
+                  </div>
+                  <div class="level-item">
+                    {{orderItems[item.name] || 0}}
+                  </div>
+                  <div class="level-item">
+                    <span class="tag is-danger">-</span>
+                    <span class="tag is-primary">+</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <!-- <template v-show="totalCost === 0">      
@@ -57,28 +76,37 @@
         </template> -->
       </div>
 
-      <div v-show="orderOption === 'now' && totalCost > 0" class="column is-4">
-        <div class="field">
-          <label class="label">Email</label>
-          <div class="control">
-            <input class="input" type="email" v-model="stripeEmail" placeholder="Email input">
+      <div v-show="orderOption === 'now'" class="column">
+        <div class="card">
+          <div class="card-content">
+            <div class="field">
+              <label class="label">Email</label>
+              <div class="control">
+                <input class="input" type="email" v-model="stripeEmail" placeholder="Email input">
+              </div>
+            </div>
+
+            <card class='box'
+              :class='{ complete }'
+              stripe='pk_test_0ysGpufB2SoUGt85fEZ72rbG'
+              :options='stripeOptions'
+              @change='complete = $event.complete'
+            />
+
+            <button
+              class='button is-primary pay-with-stripe'
+              @click='pay'
+              :disabled='!complete'
+              :class="{ 'is-loading': loading }"
+            >
+              Pay with credit card
+            </button>
           </div>
         </div>
+      </div>
 
-        <card class='box'
-          :class='{ complete }'
-          stripe='pk_test_0ysGpufB2SoUGt85fEZ72rbG'
-          :options='stripeOptions'
-          @change='complete = $event.complete'
-        />
-        <button
-          class='button is-primary pay-with-stripe'
-          @click='pay'
-          :disabled='!complete'
-          :class="{ 'is-loading': loading }"
-        >
-          Pay with credit card
-        </button>
+      <div class="column is-pulled-right">
+        <button class="button is-info">Continue</button>
       </div>
     </div>
   </div>
@@ -98,7 +126,7 @@ export default {
       loading: false,
       stripeEmail: '',
       stripeOptions: {},
-      orderOption: 0
+      orderOption: 'later'
     };
   },
 
