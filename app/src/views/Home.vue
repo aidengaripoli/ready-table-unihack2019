@@ -1,18 +1,30 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <ul>
+      <li v-for="item in restaurants" v-bind:key="item.name">
+        <Restaurant :resName="item.name" :resDesc="item.description"/>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import db from "@/firestore";
+
+import Restaurant from "@/components/Restaurant";
 
 export default {
-  name: 'home',
+  name: "home",
+  data: function() {
+    return {
+      restaurants: []
+    };
+  },
   components: {
-    HelloWorld
+    Restaurant
+  },
+  firestore: {
+    restaurants: db.collection("restaurants")
   }
-}
+};
 </script>
