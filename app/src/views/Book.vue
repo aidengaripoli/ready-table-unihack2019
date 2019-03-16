@@ -9,19 +9,20 @@
           <th>Add/Remove</th>
           <th>Quantity</th>
         </tr>
-        <tr v-for="item in menu" v-bind:key="item.id">
-          <th v-if="item.restaurantId === $route.params.restaurant">{{item.number}}</th>
-          <th v-if="item.restaurantId === $route.params.restaurant">{{item.name}}</th>
-          <th v-if="item.restaurantId === $route.params.restaurant">{{item.cost}}</th>
-          <th v-if="item.restaurantId === $route.params.restaurant">
-            <button @click="add(item.id, item.cost)" class="button is-success">+</button>
-            <button @click="remove(item.id, item.cost)" class="button is-danger">-</button>
+        <tr v-for="item in menuItems" v-bind:key="item.name">
+          <th>{{item.number}}</th>
+          <th>{{item.name}}</th>
+          <th>{{item.cost}}</th>
+          <th>
+            <button @click="add(item.name, item.cost)" class="button is-success">+</button>
+            <button @click="remove(item.name, item.cost)" class="button is-danger">-</button>
           </th>
-          <th>{{orderItems[item.id]}}</th>
+          <th>{{orderItems[item.name]}}</th>
         </tr>
       </thead>
     </table>
     <p>Total: ${{totalCost}}</p>
+    <button @click="book" class="button is-success">Make booking</button>
   </div>
 </template>
 
@@ -38,9 +39,24 @@ export default {
     };
   },
   firestore: {
-    menu: db.collection("menuItems")
+    menu: db.collection(`restaurants`)
   },
+  computed: {
+    menuItems() {
+      const restaurant = this.menu.find(item => {
+        return item.id === this.$route.params.restaurant;
+      });
+
+      if (restaurant) {
+        return restaurant.menuItems;
+      }
+
+      return [];
+    }
+  },
+
   methods: {
+    book() {},
     add(itemId, cost) {
       if (this.orderItems[itemId]) {
         this.$set(this.orderItems, itemId, this.orderItems[itemId] + 1);

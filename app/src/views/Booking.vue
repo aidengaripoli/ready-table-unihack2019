@@ -27,14 +27,14 @@
             <th>Availability</th>
             <th>Book</th>
           </tr>
-          <tr v-for="item in tables" v-bind:key="item.id">
-            <th v-if="resName === item.restaurantName">{{item.tableNumber}}</th>
-            <th v-if="resName === item.restaurantName">{{item.numSeats}}</th>
-            <th v-if="resName === item.restaurantName">
+          <tr v-for="item in resTables" v-bind:key="item.number">
+            <th>{{item.number}}</th>
+            <th>{{item.numSeats}}</th>
+            <th>
               <p v-if="item.available">Available</p>
               <p v-else>Unavailable</p>
             </th>
-            <th v-if="resName === item.restaurantName">
+            <th>
               <button
                 @click="book(resId, item.id)"
                 v-if="item.available"
@@ -67,7 +67,8 @@ export default {
   props: {
     resName: String,
     resId: String,
-    resDesc: String
+    resDesc: String,
+    resTables: {}
   },
   methods: {
     toggleBookingNow: function(isBookingNow) {
