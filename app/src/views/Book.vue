@@ -39,7 +39,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card is-paddingless">
           <div class="card-header">
             <div class="card-header-title control">
               <label class="radio">
@@ -50,21 +50,39 @@
           </div>
 
           <div v-show="orderOption === 'now'" class="card-content">
+            <br>
             <h2 class="is-size-3">Menu</h2>
             <br>
             
-            <div v-for="item in restaurant.menuItems" v-bind:key="item.name" class="card">
+            <div v-for="item in restaurant.menuItems" v-bind:key="item.name" class="card is-shadowless">
               <div class="card-content">
                 <div class="level is-mobile">
-                  <div class="level-item">
-                    {{ item.name }}
+                  <div class="level-left">
+                    <div class="level-item">
+                      {{ item.name }}
+                    </div>
                   </div>
-                  <div class="level-item">
-                    {{orderItems[item.name] || 0}}
-                  </div>
-                  <div class="level-item">
-                    <span class="tag is-danger">-</span>
-                    <span class="tag is-primary">+</span>
+                  <div class="level-right">
+                    <div class="level-item">
+                      ${{ item.cost }}
+                    </div>
+                    <div class="level-item">
+                      <div class="field has-addons">
+                        <p class="control">
+                          <button @click="remove(item.name, item.cost)" class="button">
+                            -
+                          </button>
+                        </p>
+                        <p class="control">
+                          <button @click="add(item.name, item.cost)" class="button">
+                            +
+                          </button>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="level-item">
+                      {{ orderItems[item.name] || 0 }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -76,22 +94,25 @@
         </template> -->
       </div>
 
-      <div v-show="orderOption === 'now'" class="column">
+      <div v-show="orderOption === 'now' && totalCost > 0" class="column">
         <div class="card">
           <div class="card-content">
             <div class="field">
-              <label class="label">Email</label>
               <div class="control">
-                <input class="input" type="email" v-model="stripeEmail" placeholder="Email input">
+                <input class="input" type="email" v-model="stripeEmail" placeholder="Email">
               </div>
             </div>
 
-            <card class='box'
-              :class='{ complete }'
-              stripe='pk_test_0ysGpufB2SoUGt85fEZ72rbG'
-              :options='stripeOptions'
-              @change='complete = $event.complete'
-            />
+            <div class="card">
+              <card class='card-content'
+                :class='{ complete }'
+                stripe='pk_test_0ysGpufB2SoUGt85fEZ72rbG'
+                :options='stripeOptions'
+                @change='complete = $event.complete'
+              />
+            </div>
+
+            <br>
 
             <button
               class='button is-primary pay-with-stripe'
@@ -99,14 +120,14 @@
               :disabled='!complete'
               :class="{ 'is-loading': loading }"
             >
-              Pay with credit card
+              Pay ${{ totalCost }}
             </button>
           </div>
         </div>
       </div>
 
-      <div class="column is-pulled-right">
-        <button class="button is-info">Continue</button>
+      <div v-show="orderOption === 'later'" class="column is-pulled-right">
+        <button @click="book" class="button is-info" :class="{ 'is-loading': loading }">Continue</button>
       </div>
     </div>
   </div>
@@ -123,10 +144,12 @@ export default {
       orderItems: {},
       totalCost: 0,
       complete: false,
+      isPaid: false,
       loading: false,
       stripeEmail: '',
       stripeOptions: {},
-      orderOption: 'later'
+      orderOption: 'later',
+      paid: false
     };
   },
 
@@ -148,7 +171,7 @@ export default {
       ).then(res => {
           this.loading = false
           console.log(res)
-          this.$router.push('/confirmation')
+          this.$router.push(`/confirmation/${this.tableNumber}`)
         }).catch(err => {
           console.error(err)
         })
@@ -165,6 +188,7 @@ export default {
           stripeAmount: this.totalCost
         }).then(res => {
           console.log(res)
+          this.paid = true
           this.book()
         }).catch(err => {
           this.loading = false

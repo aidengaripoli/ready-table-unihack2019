@@ -1,19 +1,29 @@
 <template>
   <div class="booking">
-    <h1>{{ restaurant.name }}</h1>
-    <p>{{ restaurant.description }}</p>
-    <p>I want to book for:</p>
-    <button
-      :class="{ 'button is-success': this.bookingNow, 'button is-danger': !this.bookingNow }"
-      @click="toggleBookingNow(true)"
-    >Right now!</button>
-    <button
-      :class="{ 'button is-success': !this.bookingNow, 'button is-danger': this.bookingNow }"
-      @click="toggleBookingNow(false)"
-    >Later</button>
+    <div class="field has-addons is-fullwidth">
+      <p class="control">
+        <button
+          class="button"
+          :class="{ 'button is-info': this.bookingNow }"
+          @click="toggleBookingNow(true)"
+        >
+          Now!
+        </button>
+      </p>
+      <p class="control">
+        <button
+          class="button"
+          :class="{ 'button is-info': !this.bookingNow }"
+          @click="toggleBookingNow(false)"
+        >
+          Later
+        </button>
+      </p>
+    </div>
 
     <div v-if="!this.bookingNow">
       <p>When do you want to make a reservation for?</p>
+      <br>
       <div class="field has-addons">
         <p class="control">
           <input
@@ -94,8 +104,8 @@
                 Seats: {{ item.numSeats }}
               </div>
               <div class="level-item">
-                <span class="tag is-primary" :class="{ 'is-info': selectedBooking === index }">
-                  {{ selectedBooking === index ? 'Selected' : 'Available!' }}
+                <span class="tag is-primary" :class="{ 'is-info': selectedBooking == index }">
+                  {{ selectedBooking == index ? 'Selected' : 'Available!' }}
                 </span>
               </div>
             </div>
@@ -105,10 +115,10 @@
     </div>
 
     <button
-      @click="book(tableNumber, restaurant)"
-      class="button is-info is-fullwidth"
+      @click="book(selectedBooking, restaurant)"
+      class="button is-info is-pulled-right"
     >
-      Book!
+      Continue
     </button>
   </div>
 </template>
@@ -118,17 +128,16 @@ export default {
   name: "Booking",
   data () {
     return {
-      selectedBooking: '1',
+      selectedBooking: 1,
       bookingNow: true,
       seatNumber: 0,
-      day: Number,
-      month: Number,
-      year: Number,
-      hour: Number,
-      minute: Number,
+      day: 0,
+      month: 0,
+      year: 0,
+      hour: 0,
+      minute: 0,
       period: "AM",
-      dateTime: "1/1/1000 12:00 AM",
-      tableNumber: Number
+      dateTime: "1/1/1000 12:00 AM"
     };
   },
   props: {
@@ -136,7 +145,7 @@ export default {
   },
   methods: {
     selectBooking (index) {
-      this.selectedBooking = index
+      this.selectedBooking = parseInt(index)
     },
 
     toggleBookingNow: function(isBookingNow) {
