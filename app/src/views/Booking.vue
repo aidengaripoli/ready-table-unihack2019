@@ -27,7 +27,7 @@
             <th>Availability</th>
             <th>Book</th>
           </tr>
-          <tr v-for="item in tables" v-bind:key="item.name">
+          <tr v-for="item in tables" v-bind:key="item.id">
             <th v-if="resName === item.restaurantName">{{item.tableNumber}}</th>
             <th v-if="resName === item.restaurantName">{{item.numSeats}}</th>
             <th v-if="resName === item.restaurantName">
@@ -35,7 +35,11 @@
               <p v-else>Unavailable</p>
             </th>
             <th v-if="resName === item.restaurantName">
-              <button v-if="item.available" class="button is-success">book</button>
+              <button
+                @click="book(resId, item.id)"
+                v-if="item.available"
+                class="button is-success"
+              >book</button>
               <button v-if="!item.available" class="button is-danger" disabled>book</button>
             </th>
           </tr>
@@ -62,11 +66,16 @@ export default {
   },
   props: {
     resName: String,
+    resId: String,
     resDesc: String
   },
   methods: {
     toggleBookingNow: function(isBookingNow) {
       this.bookingNow = isBookingNow;
+    },
+
+    book(restaurant, tableId) {
+      this.$router.push({ name: "book", params: { restaurant, tableId } });
     }
   }
 };

@@ -32,6 +32,12 @@ export default new Router({
       name: 'booking',
       component: () => import('./views/Booking.vue'),
       props: true
+    },
+    {
+      path: '/book/:restaurant/:tableId',
+      name: 'book',
+      component: () => import('./views/Book.vue'),
+      props: true
     }
   ]
 })

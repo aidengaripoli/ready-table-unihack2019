@@ -2,7 +2,7 @@
   <div class="home">
     <ul>
       <li v-for="item in restaurants" v-bind:key="item.name">
-        <Restaurant :resName="item.name" :resDesc="item.description"/>
+        <Restaurant :resName="item.name" :resId="item.id" :resDesc="item.description"/>
       </li>
     </ul>
   </div>

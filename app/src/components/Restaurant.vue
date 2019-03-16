@@ -10,7 +10,7 @@
       </div>
       <router-link
         class="button is-large button-primary"
-        :to="{ name: 'booking', params: { resName, resDesc } }"
+        :to="{ name: 'booking', params: { resName, resId, resDesc } }"
       >Book a table</router-link>
     </div>
   </div>
@@ -21,6 +21,8 @@ export default {
   name: "HelloWorld",
   props: {
     resName: String,
+    resId: String,
+
     resDesc: String
   }
 };
