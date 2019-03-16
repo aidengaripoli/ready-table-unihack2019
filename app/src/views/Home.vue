@@ -1,15 +1,13 @@
 <template>
   <div class="home">
-    <ul>
-      <li v-for="item in restaurants" v-bind:key="item.name">
-        <Restaurant
-          :resName="item.name"
-          :resId="item.id"
-          :resDesc="item.description"
-          :resTables="item.tables"
-        />
-      </li>
-    </ul>
+    <div v-for="item in restaurants" v-bind:key="item.name">
+      <Restaurant
+        :resName="item.name"
+        :resId="item.id"
+        :resDesc="item.description"
+        :resTables="item.tables"
+      />
+    </div>
   </div>
 </template>
 

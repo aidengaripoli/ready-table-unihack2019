@@ -12,12 +12,7 @@
       @click="toggleBookingNow(false)"
     >Later</button>
 
-    <div v-if="!this.bookingNow">
-      <p>When do you want to make a reservation for?</p>
-
-      <input type="datetime-local" name="bday" max="1979-12-31" value>
-    </div>
-    <div v-else>
+    <div v-if="this.bookingNow">
       <p>Lets see where you can sit.</p>
       <table class="table">
         <thead>
@@ -46,23 +41,21 @@
         </thead>
       </table>
     </div>
+    <div v-else>
+      <p>When do you want to make a reservation for?</p>
+      <input type="datetime-local" name="bday" max="1979-12-31" value>
+    </div>
   </div>
 </template>
 
 <script>
-import db from "@/firestore";
-
 export default {
   name: "Booking",
   data: function() {
     return {
       bookingNow: true,
-      seatNumber: 0,
-      tables: []
+      seatNumber: 0
     };
-  },
-  firestore: {
-    tables: db.collection("tables")
   },
   props: {
     resName: String,

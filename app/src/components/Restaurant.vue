@@ -10,7 +10,7 @@
       </div>
       <router-link
         class="button is-large button-primary"
-        :to="{ name: 'booking', params: { resName, resId, resDesc, resTables } }"
+        :to="{ name: 'tableSelection', params: { resName, resId, resDesc, resTables } }"
       >Book a table</router-link>
     </div>
   </div>
