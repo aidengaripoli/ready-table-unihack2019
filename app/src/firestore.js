@@ -3,12 +3,12 @@ import 'firebase/firestore'
 
 // initialize your firebase app
 const config = {
-  apiKey: 'AIzaSyBflZzr3fTH6xS5nbs6_wfP8vDSegZre3Y',
-  authDomain: 'midyear-reactor-233903.firebaseapp.com',
-  databaseURL: 'https://midyear-reactor-233903.firebaseio.com',
-  projectId: 'midyear-reactor-233903',
-  storageBucket: 'midyear-reactor-233903.appspot.com',
-  messagingSenderId: '972737790618'
+  apiKey: "AIzaSyA-miydMjsqhzzQQwZ5rjMy5EiLgFnadnY",
+  authDomain: "readytable.firebaseapp.com",
+  databaseURL: "https://readytable.firebaseio.com",
+  projectId: "readytable",
+  storageBucket: "readytable.appspot.com",
+  messagingSenderId: "1086666026006"
 }
 firebase.initializeApp(config)
 
