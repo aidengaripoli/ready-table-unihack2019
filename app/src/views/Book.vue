@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p v-if="bookingDateTime">Booking at {{bookingDateTime}}</p>
     <table class="table">
       <thead>
         <tr>
@@ -9,7 +10,7 @@
           <th>Add/Remove</th>
           <th>Quantity</th>
         </tr>
-        <tr v-for="item in menuItems" v-bind:key="item.name">
+        <tr v-for="item in restaurant.menuItems" v-bind:key="item.name">
           <th>{{item.number}}</th>
           <th>{{item.name}}</th>
           <th>{{item.cost}}</th>
@@ -64,7 +65,6 @@
 </template>
 
 <script>
-import db from "@/firestore";
 import axios from 'axios'
 import { Card, createToken } from 'vue-stripe-elements-plus'
 
@@ -72,7 +72,6 @@ export default {
   name: "Book",
   data () {
     return {
-      menu: [],
       orderItems: {},
       totalCost: 0,
       complete: false,
@@ -83,26 +82,14 @@ export default {
       }
     };
   },
-  firestore: {
-    menu: db.collection(`restaurants`)
+  props: {
+    tableNumber: Number,
+    bookingDateTime: String,
+    restaurant: {}
   },
 
   components: {
     Card
-  },
-
-  computed: {
-    menuItems() {
-      const restaurant = this.menu.find(item => {
-        return item.id === this.$route.params.restaurant;
-      });
-
-      if (restaurant) {
-        return restaurant.menuItems;
-      }
-
-      return [];
-    }
   },
 
   methods: {

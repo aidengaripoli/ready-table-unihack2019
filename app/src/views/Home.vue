@@ -1,12 +1,7 @@
 <template>
   <div class="home">
     <div v-for="item in restaurants" v-bind:key="item.name">
-      <Restaurant
-        :resName="item.name"
-        :resId="item.id"
-        :resDesc="item.description"
-        :resTables="item.tables"
-      />
+      <Restaurant :restaurant="item"/>
     </div>
   </div>
 </template>

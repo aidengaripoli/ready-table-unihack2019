@@ -20,7 +20,7 @@ export default new Router({
       props: true
     },
     {
-      path: '/book/:restaurant/:tableId',
+      path: '/book',
       name: 'book',
       component: () => import('./views/Book.vue'),
       props: true
