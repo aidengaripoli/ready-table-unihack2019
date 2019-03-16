@@ -4,13 +4,13 @@
       <img alt="Vue logo" src="../assets/logo.png">
     </div>
     <div class="card-content">
-      <h1>{{ resName }}</h1>
+      <h1>{{ restaurant.name }}</h1>
       <div class="content">
-        <p>{{ resDesc }}</p>
+        <p>{{ restaurant.description }}</p>
       </div>
       <router-link
         class="button is-large button-primary"
-        :to="{ name: 'tableSelection', params: { resName, resId, resDesc, resTables } }"
+        :to="{ name: 'tableSelection', params: { restaurant } }"
       >Book a table</router-link>
     </div>
   </div>
@@ -20,10 +20,7 @@
 export default {
   name: "HelloWorld",
   props: {
-    resName: String,
-    resId: String,
-    resDesc: String,
-    resTables: {}
+    restaurant: {}
   }
 };
 </script>

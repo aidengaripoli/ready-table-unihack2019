@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p v-if="bookingDateTime">Booking at {{bookingDateTime}}</p>
     <table class="table">
       <thead>
         <tr>
@@ -9,7 +10,7 @@
           <th>Add/Remove</th>
           <th>Quantity</th>
         </tr>
-        <tr v-for="item in menuItems" v-bind:key="item.name">
+        <tr v-for="item in restaurant.menuItems" v-bind:key="item.name">
           <th>{{item.number}}</th>
           <th>{{item.name}}</th>
           <th>{{item.cost}}</th>
@@ -27,34 +28,19 @@
 </template>
 
 <script>
-import db from "@/firestore";
-
 export default {
   name: "Book",
   data: function() {
     return {
-      menu: [],
       orderItems: {},
       totalCost: 0
     };
   },
-  firestore: {
-    menu: db.collection(`restaurants`)
+  props: {
+    tableNumber: Number,
+    bookingDateTime: String,
+    restaurant: {}
   },
-  computed: {
-    menuItems() {
-      const restaurant = this.menu.find(item => {
-        return item.id === this.$route.params.restaurant;
-      });
-
-      if (restaurant) {
-        return restaurant.menuItems;
-      }
-
-      return [];
-    }
-  },
-
   methods: {
     book() {},
     add(itemId, cost) {
