@@ -1,7 +1,7 @@
 <template>
   <div class="columns">
     <div class="column" v-for="(item, index) in restaurants" v-bind:key="item.name">
-      <Restaurant :index="index" :restaurant="item"/>
+      <Restaurant :index="index" :restaurant="item" />
     </div>
   </div>
 </template>
