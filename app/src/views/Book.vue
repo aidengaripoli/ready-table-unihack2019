@@ -2,29 +2,6 @@
   <div>
     <div class="columns">
       <div class="column">
-        <!-- <p v-if="bookingDateTime">Booking at {{bookingDateTime}}</p>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Number</th>
-              <th>Name</th>
-              <th>Cost</th>
-              <th>Add/Remove</th>
-              <th>Quantity</th>
-            </tr>
-            <tr v-for="item in restaurant.menuItems" v-bind:key="item.name">
-              <th>{{item.number}}</th>
-              <th>{{item.name}}</th>
-              <th>{{item.cost}}</th>
-              <th>
-                <button @click="add(item.name, item.cost)" class="button is-success">+</button>
-                <button @click="remove(item.name, item.cost)" class="button is-danger">-</button>
-              </th>
-              <th>{{orderItems[item.name] || 0}}</th>
-            </tr>
-          </thead>
-        </table> -->
-      
         <div class="card">
           <div class="card-header">
             <div class="card-header-title control">
@@ -89,9 +66,6 @@
             </div>
           </div>
         </div>
-        <!-- <template v-show="totalCost === 0">      
-          <button @click="book" class="button is-success" :class="{ 'is-loading': loading }">Make booking</button>
-        </template> -->
       </div>
 
       <div v-show="orderOption === 'now' && totalCost > 0" class="column">
@@ -170,22 +144,7 @@ export default {
       this.loading = true
 
       const tableUpdate = { [`tables.${this.tableNumber}.available`]: false }
-
       db.collection('restaurants').doc(this.restaurant.id).update(tableUpdate);
-
-      axios.post('https://us-central1-readytable.cloudfunctions.net/bookTable',
-        { message: 'reserved' }
-      ).then(res => {
-          this.loading = false
-          console.log(res)
-          this.$router.push(`/confirmation/${this.tableNumber}`)
-        }).catch(err => {
-          console.error(err)
-        })
-    },
-
-    pay() {
-      this.loading = true
 
       const menuItems = Object.keys(this.orderItems).map(key => {
         return { name: key, paid: true, quantity: this.orderItems[key], ready: false }
@@ -200,6 +159,20 @@ export default {
       }};
 
       db.collection('restaurants').doc(this.restaurant.id).update(update);
+
+      axios.post('https://us-central1-readytable.cloudfunctions.net/bookTable',
+        { message: 'reserved' }
+      ).then(res => {
+          this.loading = false
+          console.log(res)
+          this.$router.push(`/confirmation/${this.tableNumber}`)
+        }).catch(err => {
+          console.error(err)
+        })
+    },
+
+    pay() {
+      this.loading = true
 
       createToken().then(data => {
         console.log(data)

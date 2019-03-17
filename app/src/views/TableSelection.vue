@@ -159,14 +159,12 @@ export default {
 
     book(tableNumber, restaurant) {
       let bookingDateTime = "";
-      if (!this.bookingNow) {
-        bookingDateTime =
-          this.day + "/" + this.month + "/" + this.year + " " + this.hour + ":";
-        if (this.minute < 10) {
-          bookingDateTime += "0";
-        }
-        bookingDateTime += this.minute + this.period;
+      bookingDateTime =
+        this.day + "/" + this.month + "/" + this.year + " " + this.hour + ":";
+      if (this.minute < 10) {
+        bookingDateTime += "0";
       }
+      bookingDateTime += this.minute + this.period;
 
       this.$router.push({
         name: "book",

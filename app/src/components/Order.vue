@@ -1,16 +1,23 @@
 <template>
   <div>
-    <h1 class="is-size-3">Order for {{booking.user}}</h1>
-    <div class="columns">
-      <div v-for="(item, key) in booking.menuOrderItems" :key="item.name" class="column">
-        <div>
-          x{{item.quantity}} {{item.name}} {{item.ready}}
-          <button
-            @click="onItemStatusChange(key)"
-            class="button"
-          >Ready</button>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-title">
+          Order for {{ booking.user }}
         </div>
       </div>
+      <div class="card-content">
+        <div v-for="(item, key) in booking.menuOrderItems" :key="item.name" class="column">
+          <div v-show="!item.ready">
+            {{item.quantity}} {{item.name}}
+            <button
+              @click="onItemStatusChange(key)"
+              class="button"
+            >Ready</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer"></div>
     </div>
   </div>
 </template>
